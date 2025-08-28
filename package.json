@@ -1,0 +1,28 @@
+{
+  "name": "quotation-manager",
+  "version": "1.0.0",
+  "description": "간단하고 직관적인 웹 기반 품목 관리 및 견적 계산 도구",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 3000",
+    "serve": "python3 -m http.server 3000"
+  },
+  "keywords": [
+    "quotation",
+    "invoice",
+    "calculator",
+    "drawing",
+    "canvas",
+    "web-app"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/quotation-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/quotation-manager/issues"
+  },
+  "homepage": "https://github.com/yourusername/quotation-manager#readme"
+}
