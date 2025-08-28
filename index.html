@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>품목 글자 쓰기 & 계산</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -55,12 +57,95 @@
             <div class="items-list" id="itemsList">
                 <div class="empty-state">추가된 품목이 없습니다</div>
             </div>
+            
+            <div class="pdf-section">
+                <button class="pdf-btn" onclick="generatePDF()" id="pdfBtn" disabled>견적서 PDF 다운로드</button>
+            </div>
+        </div>
+        
+        <!-- 견적서 템플릿 (PDF 생성용, 화면에서는 숨김) -->
+        <div id="quotationTemplate" class="quotation-template" style="display: none;">
+            <div class="quotation-header">
+                <h1>견    적    서</h1>
+                <div class="quotation-info">
+                    <div class="date-section">
+                        <div>날  짜 : <span id="quotationDate"></span></div>
+                        <div>수  신 : <span id="receiverName">고객사</span></div>
+                        <div class="greeting">아래와 같이 견적합니다</div>
+                    </div>
+                    <div class="company-info-box">
+                        <table class="company-table">
+                            <tr>
+                                <td class="label">등록번호</td>
+                                <td class="value" colspan="3" id="businessNumber">000-00-00000</td>
+                            </tr>
+                            <tr>
+                                <td class="label">상      호</td>
+                                <td class="value" id="companyName">회사명</td>
+                                <td class="label">성     명</td>
+                                <td class="value" id="ownerName">대표자명</td>
+                            </tr>
+                            <tr>
+                                <td class="label">사업장 주소</td>
+                                <td class="value" colspan="3" id="companyAddress">사업장 주소</td>
+                            </tr>
+                            <tr>
+                                <td class="label">업     태</td>
+                                <td class="value" id="businessType">업태</td>
+                                <td class="label">종     목</td>
+                                <td class="value" id="businessItem">종목</td>
+                            </tr>
+                            <tr>
+                                <td class="label">전화번호</td>
+                                <td class="value" colspan="3" id="phoneNumber">전화번호</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="total-amount-section">
+                <div class="total-box">
+                    <div class="total-label">합계금액<br>(공급가액+세액)</div>
+                    <div class="total-amount-korean" id="quotationTotalKorean">일억원정</div>
+                    <div class="total-amount-number" id="quotationTotal">(₩0)</div>
+                </div>
+            </div>
+            
+            <div class="quotation-items">
+                <table class="quotation-table">
+                    <thead>
+                        <tr>
+                            <th class="no-col">No.</th>
+                            <th class="item-col">품명</th>
+                            <th class="spec-col">규격</th>
+                            <th class="qty-col">수량</th>
+                            <th class="price-col">단가</th>
+                            <th class="supply-col">공급가액</th>
+                            <th class="tax-col">세액</th>
+                            <th class="note-col">비고</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quotationItemsTable">
+                        <!-- 품목 데이터가 동적으로 삽입됩니다 -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="5" class="total-label-cell">합                   계</td>
+                            <td class="total-supply" id="quotationSubtotal">0</td>
+                            <td class="total-tax" id="quotationTax">0</td>
+                            <td class="total-note"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
 
     <script src="js/utils.js"></script>
     <script src="js/canvas.js"></script>
     <script src="js/itemManager.js"></script>
+    <script src="js/pdfGenerator.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
