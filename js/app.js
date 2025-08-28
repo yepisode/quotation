@@ -1,5 +1,6 @@
 window.canvasDrawing = null;
 window.itemManager = null;
+window.pdfGenerator = null;
 
 function undo() {
     if (window.canvasDrawing) {
@@ -28,4 +29,5 @@ function cancelEdit() {
 document.addEventListener('DOMContentLoaded', function() {
     window.canvasDrawing = new CanvasDrawing();
     window.itemManager = new ItemManager();
+    window.pdfGenerator = new PDFGenerator();
 });
