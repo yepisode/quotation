@@ -13,19 +13,51 @@ class CanvasDrawing {
     init() {
         this.resizeCanvas();
         this.setupEventListeners();
-        window.addEventListener('resize', () => this.resizeCanvas());
+        
+        // 리사이즈 이벤트에 디바운싱 적용하여 불필요한 리사이즈 방지
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => this.resizeCanvas(), 150);
+        });
     }
 
     resizeCanvas() {
         const rect = this.canvas.getBoundingClientRect();
-        this.canvas.width = rect.width * 2;
-        this.canvas.height = rect.height * 2;
+        const newWidth = rect.width * 2;
+        const newHeight = rect.height * 2;
+        
+        // 크기가 실제로 변경되지 않았다면 리사이즈하지 않음
+        if (this.canvas.width === newWidth && this.canvas.height === newHeight) {
+            return;
+        }
+        
+        // 현재 캔버스 내용을 저장
+        let imageData = null;
+        const isEmpty = this.isEmpty();
+        if (!isEmpty) {
+            imageData = this.canvas.toDataURL();
+        }
+        
+        // 캔버스 크기 변경
+        this.canvas.width = newWidth;
+        this.canvas.height = newHeight;
         this.ctx.scale(2, 2);
         
+        // 스타일 설정
         this.ctx.strokeStyle = this.currentColor;
         this.ctx.lineWidth = this.currentLineWidth;
         this.ctx.lineCap = 'round';
         this.ctx.lineJoin = 'round';
+        
+        // 저장된 내용 복원
+        if (!isEmpty && imageData) {
+            const img = new Image();
+            img.onload = () => {
+                this.ctx.drawImage(img, 0, 0, rect.width, rect.height);
+            };
+            img.src = imageData;
+        }
     }
 
     setupEventListeners() {
