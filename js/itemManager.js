@@ -285,5 +285,9 @@ class ItemManager {
         document.getElementById('subtotal').textContent = Utils.formatNumber(subtotal);
         document.getElementById('tax').textContent = Utils.formatNumber(tax);
         document.getElementById('total').textContent = Utils.formatNumber(total);
+        
+        if (window.pdfGenerator) {
+            window.pdfGenerator.updatePDFButton();
+        }
     }
 }
