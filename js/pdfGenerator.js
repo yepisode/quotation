@@ -160,7 +160,9 @@ class PDFGenerator {
             
             const today = new Date().toISOString().slice(0, 10);
             const filename = `견적서_${today}.pdf`;
-            pdf.save(filename);
+            
+            // 모바일 호환성을 위한 다운로드 방식 변경
+            this.downloadPDFForMobile(pdf, filename);
             
         } catch (error) {
             console.error('PDF 생성 중 오류 발생:', error);
@@ -172,6 +174,48 @@ class PDFGenerator {
             template.style.left = '';
             template.style.width = '';
             template.style.backgroundColor = '';
+        }
+    }
+
+    downloadPDFForMobile(pdf, filename) {
+        try {
+            // 모바일 브라우저 감지
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // Blob을 사용한 다운로드 방식
+                const pdfBlob = pdf.output('blob');
+                const blobUrl = URL.createObjectURL(pdfBlob);
+                
+                if (isIOS) {
+                    // iOS Safari의 경우 새 창에서 열기
+                    const newWindow = window.open('', '_blank');
+                    newWindow.location.href = blobUrl;
+                } else {
+                    // 다른 모바일 브라우저의 경우
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = filename;
+                    
+                    // DOM에 추가하고 클릭 후 제거
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // URL 정리
+                    setTimeout(() => {
+                        URL.revokeObjectURL(blobUrl);
+                    }, 100);
+                }
+            } else {
+                // 데스크톱의 경우 기존 방식 사용
+                pdf.save(filename);
+            }
+        } catch (error) {
+            console.error('PDF 다운로드 중 오류:', error);
+            // 대안으로 기존 방식 시도
+            pdf.save(filename);
         }
     }
 }
